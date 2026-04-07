@@ -1,6 +1,9 @@
 import logging
 
+import uvicorn
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
+from starlette.middleware.cors import CORSMiddleware
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -8,12 +11,20 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-mcp = FastMCP("Unified MCP (TWIO)", host="0.0.0.0", port=8584)
+mcp = FastMCP(
+    "Unified MCP (TWIO)",
+    host="0.0.0.0",
+    port=8584,
+    transport_security=TransportSecuritySettings(
+        enable_dns_rebinding_protection=False,
+        allowed_origins=["*"],
+    ),
+)
 
 
 @mcp.tool()
 def tool_get_local_time(timezone: str = "America/Los_Angeles"):
-    from .tools.time import get_local_time
+    from twio_mcp.tools.time import get_local_time
 
     """Get current local time.
 
@@ -27,8 +38,18 @@ def tool_get_local_time(timezone: str = "America/Los_Angeles"):
 
 
 def main():
-    logger.debug("Starting MCP server...")
-    mcp.run()
+    app = mcp.streamable_http_app()
+    # Step 2: Add CORS middleware
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["https://chat2.timwhite.io"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["mcp-session-id"],
+    )
+
+    # Step 3: Run with uvicorn directly (not mcp.run)
+    uvicorn.run(app, host="0.0.0.0", port=8584)
 
 
 if __name__ == "__main__":
