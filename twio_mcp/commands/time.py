@@ -2,7 +2,6 @@ import zoneinfo
 from datetime import datetime
 
 
-
 def cmd_get_time(timezone: str = "America/Los_Angeles", **kwargs) -> str:
     """Returns the current time in the given timezone as ISO 8601 string."""
     try:

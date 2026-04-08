@@ -1,6 +1,7 @@
 .PHONY: dev build run restart logs
 
 dev:
+	docker stop twio-mcp || true
 	uv run python -m twio_mcp.server
 
 build:

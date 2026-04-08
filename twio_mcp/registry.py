@@ -1,6 +1,12 @@
 from typing import Callable
 
-from twio_mcp.commands import CommandMeta, cmd_get_time, cmd_help, cmd_list
+from twio_mcp.commands import (
+    CommandMeta,
+    cmd_calculate,
+    cmd_get_time,
+    cmd_help,
+    cmd_list,
+)
 
 COMMANDS: dict[str, CommandMeta] = {
     "list": {
@@ -25,10 +31,19 @@ COMMANDS: dict[str, CommandMeta] = {
         },
         "example": '{"command": "get_time", "kwargs": {"timezone": "America/New_York"}}',
     },
+    "calculate": {
+        "short": "Evaluate a mathematical expression",
+        "detail": "Evaluates arithmetic, algebraic, symbolic, calculus expressions using sympy. Supports solve(), diff(), integrate(), simplify(), limit() and more.",
+        "kwargs": {
+            "expression": "str, required — the expression to evaluate e.g. 'solve(x**2 - 4, x)'",
+        },
+        "example": '{"command": "calculate", "kwargs": {"expression": "solve(x**2 - 4, x)"}}',
+    },
 }
 
 REGISTRY: dict[str, Callable] = {
     "list": cmd_list,
     "help": cmd_help,
     "get_time": cmd_get_time,
+    "calculate": cmd_calculate,
 }
