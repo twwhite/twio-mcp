@@ -1,9 +1,12 @@
 import logging
+from typing import Callable, TypedDict
 
 import uvicorn
 from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
 from starlette.middleware.cors import CORSMiddleware
+
+from twio_mcp.registry import REGISTRY
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -23,18 +26,19 @@ mcp = FastMCP(
 
 
 @mcp.tool()
-def tool_get_local_time(timezone: str = "America/Los_Angeles"):
-    from twio_mcp.tools.time import get_local_time
-
-    """Get current local time.
-
-    Args:
-        timezone: IANA timezone string. Default: America/Los_Angeles.
-    Returns:
-        Formatted time, e.g. "Tuesday, July 30, 2025 11:05 AM PDT".
+def hub(command: str, kwargs: dict | None = None) -> str:
     """
-
-    return get_local_time(timezone)
+    Central dispatch tool for all available capabilities.
+    Always call with command='list' at the start of a session to discover
+    available commands. Then call command='help' with the specific command
+    name to get full usage details before invoking it.
+    """
+    if kwargs is None:
+        kwargs = {}
+    if command not in REGISTRY:
+        available = ", ".join(REGISTRY.keys())
+        return f"Unknown command '{command}'. Available: {available}"
+    return REGISTRY[command](**kwargs)
 
 
 def main():
