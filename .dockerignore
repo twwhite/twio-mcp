@@ -1,0 +1,13 @@
+venv
+.git
+.gitignore
+.python-version
+*.egg-info
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.mypy_cache
+.ruff_cache
+tw-notes.md
+README.md
