@@ -5,6 +5,7 @@ description = "MCP hub for lazy-loading an arbitrary list of commands for LLM to
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "httpx>=0.28.1",
     "mcp>=1.27.0",
     "sympy>=1.14.0",
 ]

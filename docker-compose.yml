@@ -1,0 +1,9 @@
+services:
+    twio-mcp:
+        build: .
+        container_name: twio-mcp
+        restart: unless-stopped
+        ports:
+            - "8584:8584"
+        volumes:
+            - ./data:/data

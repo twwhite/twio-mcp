@@ -19,7 +19,11 @@ def cmd_help(command: str | None = None, **kwargs) -> str:
     from twio_mcp.registry import COMMANDS
 
     if not command:
-        return 'Usage: help requires a command name. Example: {"command": "help", "kwargs": {"command": "list"}}'
+        return (
+            "help requires a command name kwarg. "
+            'Example: {"command": "help", "kwargs": {"command": "get_time"}}. '
+            'Call {"command": "list"} first to see all available command names.'
+        )
     if command not in COMMANDS:
         return f"Unknown command '{command}'. Call list to see available commands."
 
